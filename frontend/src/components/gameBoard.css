@@ -1,0 +1,90 @@
+/* Game board container - centers the board */
+.game-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+/* The game board itself */
+.game-board {
+  display: flex;
+  flex-direction: column;
+  border: 3px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Each row in the grid */
+.grid-row {
+  display: flex;
+}
+
+/* Individual grid cells */
+.grid-cell {
+  /* 
+     * Taking the card dimensions (140px × 200px) and scaling to 3/4 size
+     * Card width: 140px * 0.75 = 105px
+     * Card height: 200px * 0.75 = 150px
+     */
+  width: 105px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border: 1px solid #555;
+}
+
+/* Chess-like pattern for the board */
+.light-cell {
+  background-color: #f0d9b5;
+}
+
+.dark-cell {
+  background-color: #b58863;
+}
+
+/* Territory styling */
+.player-territory {
+  /* Subtle blue tint for player territory */
+  box-shadow: inset 0 0 20px rgba(0, 0, 255, 0.15);
+}
+
+.opponent-territory {
+  /* Subtle red tint for opponent territory */
+  box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.15);
+}
+
+.frontline {
+  /* Distinctive border for the frontline */
+  border: 2px dashed #444;
+}
+
+/* Cell coordinates for debugging */
+.cell-coordinates {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 920px) {
+  .grid-cell {
+    width: 80px;
+    height: 114px;
+  }
+}
+
+@media (max-width: 700px) {
+  .grid-cell {
+    width: 60px;
+    height: 85px;
+  }
+
+  .cell-coordinates {
+    font-size: 8px;
+  }
+}
