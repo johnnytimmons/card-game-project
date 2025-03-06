@@ -33,11 +33,13 @@ const GridCell: React.FC<{
 const GameBoard: React.FC = () => {
     // Create the 6x5 grid
     const renderGrid = () => {
-      const grid = [];
+      // Explicitly type the grid array as an array of JSX elements
+      const grid: React.ReactNode[] = [];
       
       // Loop through rows (0-5)
       for (let row = 0; row < 6; row++) {
-        const rowCells = [];
+        // Explicitly type the rowCells array as an array of JSX elements
+        const rowCells: React.ReactNode[] = [];
         
         // Loop through columns (0-4)
         for (let col = 0; col < 5; col++) {

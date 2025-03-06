@@ -6,6 +6,7 @@ export interface UnitCard {
     damage: number;
     health: number;
     ability?: string;
+    defense?: number;
   }
 
   export interface GearCard {
