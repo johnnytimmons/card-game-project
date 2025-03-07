@@ -1,3 +1,6 @@
+// models/gameStateModel.ts
+import { EquippedUnit, } from "./attachmentModel";
+
 export interface Position {
     row: number;
     col: number;
@@ -5,9 +8,9 @@ export interface Position {
 
   export interface PlacedCard {
     cardId: number;
+    equippedUnit: EquippedUnit; // Now using EquippedUnit instead of just IDs
     position: Position;
     playerId: string;
-    health: number; // Current health, which might differ from max
   }
 
   export interface GameState {

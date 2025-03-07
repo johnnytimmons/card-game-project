@@ -5,6 +5,7 @@
   align-items: center;
   margin: 20px 0;
   width: 100%;
+  flex: 1;
 }
 
 /* The game board itself */
@@ -22,22 +23,18 @@
 
 /* Individual grid cells */
 .grid-cell {
-  width: 85px; /* Reduced from 105px */
-  height: 110px; /* Reduced from 150px - made proportionally shorter */
+  width: 100px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   border: 1px solid #555;
+  transition: background-color 0.2s ease;
 }
 
-/* Chess-like pattern for the board */
-.light-cell {
-  background-color: #f0d9b5;
-}
-
-.dark-cell {
-  background-color: #b58863;
+.grid-cell:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Territory styling */

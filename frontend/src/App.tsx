@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Card } from "./../../card-game-backend/src/models/cardModel";
 import CardList from "./components/cardList";
 import GameBoard from "./components/gameBoard"; // Import the GameBoard component
+import FixedCardHand from "./components/cardHand"; // Import the new component
 import GameInfo from './components/gameInfo';
 import './App.css';
+import './components/token.css';
+import './components/gameBoard.css'
 
 function App() {
   const [sampleCards, setSampleCards] = useState<Card[]>([]);
@@ -50,25 +53,16 @@ function App() {
         </button>
       </div>
          
-      <div className="game-content">
-  <div className="left-panel">
-    {error && <div className="error-message">{error}</div>}
-    {isLoading ? (
-      <div className="loading">Loading cards...</div>
-    ) : (
-      <CardList cards={sampleCards} />
-    )}
-  </div>
-  
-  <div className="center-panel">
-    {showGameBoard && <GameBoard />}
-  </div>
-  
-  <div className="right-panel">
-    <GameInfo />
-  </div>
-</div>
-</div>
+      {error && <div className="error-message">{error}</div>}
+      
+      {isLoading && <div className="loading">Loading cards...</div>}
+
+      {/* Game board */}
+      {showGameBoard && <GameBoard />}
+      
+      {/* Fixed card hand at the bottom - always visible */}
+      <FixedCardHand cards={sampleCards} />
+    </div>
   );
 }
 

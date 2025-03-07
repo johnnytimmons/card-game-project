@@ -1,0 +1,232 @@
+/* Fixed card hand container at the bottom of the screen */
+.card-hand-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(20, 20, 30, 0.85);
+  padding: 15px 20px;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+/* Handle minimized state */
+.card-hand-container.minimized {
+  transform: translateY(calc(100% - 40px));
+}
+
+/* Header for the card hand area */
+.hand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hand-title {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0;
+}
+
+.hand-toggle-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+/* Horizontal scrolling container for the cards */
+.card-hand {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px 0;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  cursor: none;
+}
+
+/* Styling the scrollbar for Webkit browsers */
+.card-hand::-webkit-scrollbar {
+  height: 8px;
+}
+
+.card-hand::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-hand::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+/* Horizontal card layout specifically for the hand */
+.card-hand .card-display {
+  /* Change the orientation to horizontal */
+  width: 200px; /* Now wider than tall */
+  height: 110px; /* Shorter height */
+  flex-direction: row; /* Horizontal layout instead of vertical */
+  align-items: center;
+  padding: 8px;
+  min-width: 200px; /* Ensure cards don't shrink too much */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 5px;
+  cursor: pointer;
+  outline: none;
+  aspect-ratio: 1.8/1; /* Horizontal aspect ratio */
+}
+
+/* Reorganize card content for horizontal layout */
+.card-hand .card-header {
+  width: 70px;
+  height: 100%;
+  padding-right: 8px;
+  border-right: 1px solid #eee;
+  border-bottom: none;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.card-hand .card-illustration {
+  width: 40px;
+  height: 40px;
+  margin: 0 8px;
+}
+
+.card-hand .card-stats {
+  flex-direction: column;
+  border: none;
+  padding: 0 8px;
+  height: 100%;
+  justify-content: center;
+}
+
+.card-hand .card-ability-section {
+  width: 80px;
+  margin-left: auto;
+  height: 100%;
+  border-left: 1px solid #eee;
+  padding-left: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Hover effect for cards in hand */
+.card-hand .card-display:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+/* Additional spacing for the game area to avoid overlap with the hand */
+.game-area {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 160px; /* Adjust based on the height of your card hand */
+  max-width: 1000px;
+}
+
+/* Card detail panel styling */
+.card-detail-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 250px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  padding: 15px;
+  height: auto; /* Let content determine height */
+  max-height: 80vh; /* But limit to 80% of viewport height */
+  overflow-y: auto; /* Add scrolling if content is too tall */
+  z-index: 100;
+  transition: opacity 0.2s ease;
+}
+
+.card-detail-panel h3 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+/* Visual distinction between hover and click panels */
+.card-detail-panel.hover-panel {
+  border-left: 3px solid #4a90e2;
+}
+
+.card-detail-panel.click-panel {
+  border-left: 3px solid #e2574a;
+}
+
+/* Close button for the panel */
+.close-panel-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.close-panel-button:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.card-type {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.stat-display {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ability-section {
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.ability-section h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+}
