@@ -63,7 +63,9 @@
   padding: 8px;
   transition: transform 0.3s ease;
   border: 1px solid #ccc;
+  cursor: pointer;
   flex-shrink: 1;
+  user-select: none;
 }
 
 /* Style for the card header */
@@ -336,19 +338,45 @@
 
 .action-buttons {
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
 }
 
 .action-button {
-  padding: 8px 16px;
-  background-color: #2196f3;
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  background-color: #4a90e2;
   color: white;
   border: none;
   border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
 }
 
 .action-button:hover {
-  background-color: #0b7dda;
+  background-color: #3a80d2;
+}
+
+/* Special styling for the ability button */
+.ability-button {
+  background-color: #9c27b0; /* Purple to distinguish it */
+}
+
+.ability-button:hover {
+  background-color: #7b1fa2;
+}
+
+/* Disabled state for buttons */
+.action-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.ability-button:disabled {
+  background-color: #d1c4e9;
 }
