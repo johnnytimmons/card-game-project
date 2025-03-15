@@ -1,0 +1,34 @@
+{
+  "id": "game_1742053188319_y5abcyh",
+  "playerTurn": "player2",
+  "players": {
+    "player1": {
+      "handCardIds": [
+        101,
+        1,
+        102,
+        201,
+        2
+      ],
+      "deckCardIds": [],
+      "health": 20,
+      "deckType": "standard"
+    },
+    "player2": {
+      "handCardIds": [
+        101,
+        201,
+        2
+      ],
+      "deckCardIds": [],
+      "health": 20
+    }
+  },
+  "board": [],
+  "turnNumber": 2,
+  "lastUpdated": "2025-03-15T15:40:16.816Z",
+  "gameLog": [
+    "Game created. Players: player1 vs player2",
+    "Player player2 attempted to draw but has no cards left!"
+  ]
+}

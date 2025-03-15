@@ -1,26 +1,24 @@
 {
-  "name": "card-game-backend",
+  "name": "card-game",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/server.js",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "dist/server.js",
-    "dev": "ts-node card-game-backend/src/server.ts"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.13.8",
-    "@types/uuid": "^10.0.0",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.2",
-    "uuid": "^11.1.0"
-  }
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4"
+  },
+  "packageManager": "npm@10.5.0"
 }
