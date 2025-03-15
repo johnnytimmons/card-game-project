@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { allCards } from "../data/all-cards";
-
+import { allCards } from "../data/card-registry";
 // Function to return all cards
 export const getCards = (req: Request, res: Response) => {
     res.json(allCards);
@@ -17,10 +16,3 @@ export const shuffleDeckHandler = (req: Request, res: Response) => {
     res.json(shuffledDeck);
 };
 
-// Function to shuffle the deck and draw a specified number of cards
-export const drawCards = (req: Request, res: Response) => {
-    const numCards = parseInt(req.query.numCards as string) || 5; // Get numCards from the query parameter, default to 5
-    const shuffledDeck = shuffleDeck(); // Shuffle the deck
-    const drawnCards = shuffledDeck.slice(0, numCards); // Draw the requested number of cards
-    res.json(drawnCards); // Return the drawn cards in the response
-};

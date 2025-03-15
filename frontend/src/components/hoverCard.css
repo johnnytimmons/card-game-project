@@ -1,0 +1,39 @@
+/* Debug version of hoverCard.css - simplified for testing */
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+/* Add a noticeable border to confirm CSS is applied */
+.card {
+  border: 3px solid red;
+  width: 145px;
+  height: 140px;
+  transition: transform 0.5s ease;
+  position: relative;
+  margin: 5px;
+  margin-bottom: auto;
+  background: white;
+
+  /* Initial state - start with basic transform */
+  transform: translateY(15%);
+}
+
+/* Clear hover effect with dramatic change */
+.card:hover {
+  border-color: green;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transform: scale(1.03) translateX(0px);
+  cursor: grab;
+}
+
+/* Basic header styles */
+.card-header {
+  background-color: blue;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.card-body {
+  padding: 20px;
+  width: 125px;
+  height: 140px;
+}

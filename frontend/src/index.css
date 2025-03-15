@@ -36,13 +36,14 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 9px;
+  margin: 1px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #282449;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -53,7 +54,36 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .grid-cell {
+    width: 70px;
+    height: 70px;
+  }
+}
 
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .grid-cell {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .game-board-container {
+    padding: 15px;
+  }
+
+  .game-info-footer {
+    margin: 0 10px 5px 10px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .game-sidebar,
+  .game-info-panel {
+    width: 200px;
+  }
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

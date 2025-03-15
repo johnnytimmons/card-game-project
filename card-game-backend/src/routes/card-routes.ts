@@ -1,5 +1,6 @@
 import express from "express";
-import { getCards, shuffleDeckHandler, drawCards } from "../controllers/cardController";
+import { getCards, shuffleDeckHandler } from "../controllers/cardController";
+import { drawCards } from "../controllers/gameActions";
 
 const router = express.Router();
 

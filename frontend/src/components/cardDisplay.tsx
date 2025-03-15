@@ -1,122 +1,120 @@
 import React from "react";
 import { Card } from "../../../card-game-backend/src/models/cardModel";
+import "./cardTypeLabels.css";
+import "./hoverCard.css";
 
-// Updated props interface to include isInHand
-export const CardDisplay: React.FC<{ card: Card, isInHand?: boolean }> = ({ card, isInHand = false }) => {
-  // Type and property checks remain the same
-  const isUnitType = card.type === 'Hero' || card.type === 'Unit' || 
-                    card.type === 'Creature' || card.type === 'Automaton';
-  const isGearType = card.type === 'Defense' || card.type === 'Heal';
-  
-  const hasAbility = 'ability' in card && card.ability;
+export const CardDisplay: React.FC<{ 
+  card: Card, 
+  isInHand?: boolean,
+  onClick?: () => void,
+  style?: React.CSSProperties
+}> = ({ card, isInHand = false, onClick, style }) => {
+  const getCardTypeCategory = (type: string): string => {
+    // Unit types
+    if (['Hero', 'Unit'].includes(type)) {
+      return 'UNIT';
+    }
+    // Gear types
+    else if (['Gear'].includes(type)) {
+      return 'GEAR';
+    }
+    // Spell types
+    else if (['Spell'].includes(type)) {
+      return 'SPELL';
+    }
+    // Default
+    return 'UNIT';
+  };
+
+  const cardTypeCategory = getCardTypeCategory(card.type);
+
+  const hasAbility = 'abilities' in card && card.abilities;
   const hasDamage = 'damage' in card && typeof card.damage === 'number';
   const hasHealth = 'health' in card && typeof card.health === 'number';
   const hasDefense = 'defense' in card && typeof card.defense === 'number';
 
-  // Return different layouts based on whether the card is in hand
-  if (isInHand) {
-    // Horizontal layout for cards in hand
-    return (
-<li className={`card-display ${isInHand ? 'hand-card' : ''}`}>
-        {/* Left section: Name and type */}
-        <div className="card-header">
-          <span className="card-name">{card.name}</span>
-          <span className="card-type">{card.type}</span>
-        </div>
-        
-        {/* Icon section */}
-        <div className="card-illustration">
-          {isUnitType ? "⚔️" : isGearType ? "🛡️" : "🤖"}
-        </div>
-        
-        {/* Stats section */}
-        <div className="card-stats">
-          {hasDamage && (
-            <div className="stat-item">
-              <span className="stat-icon">⚔️</span>
-              <span className="card-damage">{card.damage}</span>
-            </div>
-          )}
-          
-          {hasHealth && (
-            <div className="stat-item">
-              <span className="stat-icon">❤️</span>
-              <span className="card-health">{card.health}</span>
-            </div>
-          )}
+  // Simple function to display abilities
+  const displayAbilities = () => {
+    if (!card.abilities) return '';
+    if (typeof card.abilities === 'string') return card.abilities;
+    if (Array.isArray(card.abilities)) return card.abilities.join(', ');
+    return '';
+  };
 
-          {hasDefense && (
-            <div className="stat-item">
-              <span className="stat-icon">🛡️</span>
-              <span className="card-defense">{card.defense}</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Ability section */}
-        {hasAbility && (
-          <div className="card-ability-section">
-            <span className="ability-label">Ability:</span>
-            <span className="ability-text">{card.ability}</span>
-          </div>
-        )}
-      </li>
-    );
-  }
+  // Get header color based on card type
+  const getHeaderColor = () => {
+    switch(cardTypeCategory) {
+      case 'UNIT': return '#ff5c8d';
+      case 'GEAR': return '#63c7ff';
+      case 'SPELL': return '#7b6ef6';
+      default: return '#2979ff';
+    }
+  };
 
-  // Original vertical layout for cards on the board
+  // Use the CSS class structure from hoverCard.css
   return (
-    <li className="card-display">
+    <div 
+      className={`card shadow ${isInHand ? 'in-hand' : ''}`}
+      onClick={onClick}
+      style={{
+        ...style,
+        '--card-header-color': getHeaderColor(),
+      } as React.CSSProperties}
+    >
       <div className="card-header">
-        <span className="card-name">{card.name}</span>
-        <span className="card-type">{card.type}</span>
+        {card.name}
       </div>
       
-      <div style={{ display: "flex", height: "100%" }}>
-        {/* Left side: Illustration */}
-        <div className="card-illustration" style={{ flex: "0 30px", marginRight: "8px" }}>
-          {isUnitType ? "⚔️" : isGearType ? "🛡️" : "🤖"}
-        </div>
-        
-        {/* Right side: Stats and abilities */}
-        <div style={{ flex: "1", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          {/* Stats row */}
-          <div className="card-stats" style={{ display: "flex", gap: "10px", marginBottom: "4px" }}>
-            {hasDamage && (
-              <div className="stat-item">
-                <span className="stat-icon">⚔️</span>
-                <span className="card-damage">{card.damage}</span>
-              </div>
-            )}
-            
-            {hasHealth && (
-              <div className="stat-item">
-                <span className="stat-icon">❤️</span>
-                <span className="card-health">{card.health}</span>
-              </div>
-            )}
-
-            {hasDefense && (
-              <div className="stat-item">
-                <span className="stat-icon">🛡️</span>
-                <span className="card-defense">{card.defense}</span>
-              </div>
-            )}
+      <div className="card-body">
+        <dl className="contact-info">
+          {/* Card type */}
+          <div className="contact-item">
+            <dt>Type:</dt>
+            <dd>
+              <span className={`card-type-label type-${cardTypeCategory.toLowerCase()}`}>
+                {card.type}
+              </span>
+            </dd>
           </div>
           
-          {/* Ability */}
-          {hasAbility && (
-            <div className="card-ability-section" style={{ fontSize: "11px" }}>
-              <div className="ability-divider"></div>
-              <div className="ability-container">
-                <span className="ability-label">Ability:</span>
-                <span className="ability-text">{card.ability}</span>
-              </div>
+          {/* Stats section */}
+          {(hasDamage || hasHealth || hasDefense) && (
+            <div className="contact-item">
+              <dt>Stats:</dt>
+              <dd className="card-stats">
+                {hasDamage && (
+                  <span className="stat">⚔️ {card.damage}</span>
+                )}
+                
+                {hasHealth && (
+                  <span className="stat">❤️ {card.health}</span>
+                )}
+
+                {hasDefense && (
+                  <span className="stat">🛡️ {card.defense}</span>
+                )}
+              </dd>
             </div>
           )}
-        </div>
+          
+          {/* Ability section */}
+          {hasAbility && (
+            <div className="contact-item">
+              <dt>Ability:</dt>
+              <dd>{displayAbilities()}</dd>
+            </div>
+          )}
+          
+          {/* Origin section if needed */}
+          {card.origin && (
+            <div className="contact-item">
+              <dt>Origin:</dt>
+              <dd>{card.origin}</dd>
+            </div>
+          )}
+        </dl>
       </div>
-    </li>
+    </div>
   );
 };
 

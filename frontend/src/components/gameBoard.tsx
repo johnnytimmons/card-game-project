@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
 import './GameBoard.css';
 import { 
   BoardUnit,
@@ -6,8 +6,8 @@ import {
 } from '../types/gameTypes';
 import UnitToken from './token';
 
-// Component for a single cell in the grid with proper types
-const GridCell: React.FC<GridCellProps> = ({ 
+// GridCell component remains the same as before
+const GridCell: React.FC<GridCellProps & { placementMode: boolean, onPlaceCard: Function }> = ({ 
   row, 
   col, 
   unit, 
@@ -15,26 +15,45 @@ const GridCell: React.FC<GridCellProps> = ({
   onCellClick, 
   onUnitSelect,
   onUnitHover,
-  onUnitLeave
+  onUnitLeave,
+  placementMode,
+  onPlaceCard
 }) => {
-  // Determine which territory this cell belongs to
-  let territoryClass = '';
-  if (row < 2) {
-    territoryClass = 'opponent-territory';
-  } else if (row > 3) {
-    territoryClass = 'player-territory';
-  } else {
-    territoryClass = 'frontline';
-  }
+// Territory class logic
+let territoryClass = '';
 
-  // Handle cell click - if empty, call onCellClick
+// Base territory assignment
+if (row < 3) {
+  territoryClass = 'opponent-territory';
+} else if (row > 2) {
+  territoryClass = 'player-territory';
+}
+
+// Apply special row designations
+if (row === 2) {
+  // Opponent frontline
+  territoryClass += ' opponent-frontline';
+} else if (row === 0) {
+  // Opponent deployment
+  territoryClass += ' opponent-deployment';
+} else if (row === 3) {
+  // Player frontline
+  territoryClass += ' player-frontline';
+} else if (row === 5) {
+  // Player deployment
+  territoryClass += ' player-deployment';
+}
+
+  // Handle cell click with placement logic
   const handleCellClick = () => {
-    if (!unit) {
+    if (placementMode && !unit) {
+      onPlaceCard(row, col);
+    } else if (!unit) {
       onCellClick(row, col);
     }
   };
 
-  // Handle mouse events for hover functionality
+  // Mouse event handlers
   const handleMouseEnter = () => {
     if (unit && onUnitHover) {
       onUnitHover(unit);
@@ -55,7 +74,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
   return (
     <div 
-      className={`grid-cell ${territoryClass}`}
+      className={`grid-cell ${territoryClass} ${placementMode && !unit ? 'valid-placement' : ''}`}
       onClick={handleCellClick}
       data-row={row}
       data-col={col}
@@ -70,58 +89,292 @@ const GridCell: React.FC<GridCellProps> = ({
         />
       }
       
-      {/* Optional: keep coordinates for debugging */}
       <span className="cell-coordinates">{row},{col}</span>
     </div>
   );
 };
 
-const GameBoard: React.FC = () => {
-  // State for selected and hovered units
+const GameBoard: React.FC<{ 
+  selectedCard: any | null, 
+  onCardPlaced: Function,
+  gameId?: string,
+  playerId?: string,
+  onUnitSelect?: Function,
+  onUnitHover?: Function
+}> = ({ selectedCard, onCardPlaced, gameId, playerId, onUnitSelect, onUnitHover }) => {
+  // State
   const [selectedUnit, setSelectedUnit] = useState<BoardUnit | null>(null);
   const [hoveredUnit, setHoveredUnit] = useState<BoardUnit | null>(null);
+  const [boardUnits, setBoardUnits] = useState<BoardUnit[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
-  // This would be populated from your game state in a real implementation
-  const [boardUnits, setBoardUnits] = useState<BoardUnit[]>([
-    // Example units - in your real code, this would come from your game state
-    {
-      cardId: 1,
-      position: { row: 4, col: 2 },
-      playerId: 'player1',
-      equippedUnit: {
-        effectiveDamage: 30,
-        effectiveHealth: 30
-      },
-      baseUnit: {
-        name: 'Darrowe',
-        type: 'Hero',
-        ability: 'Inspire'
-      }
-    },
-    {
-      cardId: 3,
-      position: { row: 1, col: 3 },
-      playerId: 'player2',
-      equippedUnit: {
-        effectiveDamage: 25,
-        effectiveHealth: 40
-      },
-      baseUnit: {
-        name: 'Bear',
-        type: 'Creature',
-      }
+  // Determine if we're in placement mode
+  const placementMode = !!selectedCard;
+  
+  // Load board units from API when component mounts or gameId changes
+  useEffect(() => {
+    if (gameId) {
+      setIsLoading(true);
+     // Fetch board state from the backend
+     fetch(`http://localhost:5000/api/game/${gameId}/board`)
+     .then(response => {
+       if (!response.ok) {
+         throw new Error('Failed to fetch board state');
+       }
+       return response.json();
+        })
+        .then(data => {
+          // Transform the data if needed to match the BoardUnit type
+          const transformedUnits = data.map((boardCard: any) => ({
+            cardId: boardCard.cardId,
+            position: boardCard.position,
+            playerId: boardCard.playerId,
+            equippedUnit: boardCard.equippedUnit,
+            baseUnit: {
+              name: boardCard.cardDetails?.name || 'Unknown',
+              type: boardCard.cardDetails?.type || 'Unknown',
+              ability: boardCard.cardDetails?.ability
+            }
+          }));
+          
+          setBoardUnits(transformedUnits);
+          setErrorMessage(null);
+        })
+        .catch(error => {
+          console.error('Error loading board units:', error);
+          setErrorMessage(`Failed to load the game board: ${error.message}`);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-  ]);
+  }, [gameId]);
+  
+  // Update body class when placement mode changes
+  useEffect(() => {
+    if (placementMode) {
+      document.body.classList.add('placement-mode');
+    } else {
+      document.body.classList.remove('placement-mode');
+    }
+    
+    return () => {
+      document.body.classList.remove('placement-mode');
+    };
+  }, [placementMode]);
 
   // Handle selecting a unit
   const handleUnitSelect = (unit: BoardUnit) => {
-    setSelectedUnit(unit);
+    if (!placementMode) {
+      setSelectedUnit(prevSelected => {
+        const newSelected = prevSelected && 
+          prevSelected.position.row === unit.position.row && 
+          prevSelected.position.col === unit.position.col
+            ? null  // Deselect if clicking the same unit
+            : unit;  // Select the new unit
+        
+        // Call the parent's onUnitSelect if provided
+        if (onUnitSelect) {
+          onUnitSelect(newSelected);
+        }
+        
+        return newSelected;
+      });
+    }
   };
   
-  // Handle clicking an empty cell - for movement, etc.
+  // Update the hover handler to pass the unit up to the parent
+  const handleUnitHover = (unit: BoardUnit) => {
+    setHoveredUnit(unit);
+    if (onUnitHover) {
+      onUnitHover(unit);
+    }
+  };
+  
+  // Handle clicking an empty cell - could be used for movement
   const handleCellClick = (row: number, col: number) => {
-    console.log(`Cell clicked: ${row}, ${col}`);
-    // Add your movement or action logic here
+    // If a unit is selected, this could be a movement command
+    if (selectedUnit && gameId && playerId) {
+      console.log(`Moving unit from ${selectedUnit.position.row},${selectedUnit.position.col} to ${row},${col}`);
+    }
+  };
+  
+  // Handle attacking with selected unit
+  const handleAttack = (targetUnit: BoardUnit) => {
+    if (!selectedUnit || !gameId || !playerId) return;
+    
+    // Call the attack API endpoint in your backend
+    fetch('http://localhost:5000/api/game/attack', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'player-id': playerId
+      },
+      body: JSON.stringify({
+        gameId: gameId,
+        attackerPosition: selectedUnit.position,
+        targetPosition: targetUnit.position
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result && data.result.success) {
+        // Update the board with the new state
+        // You may need to re-fetch the board or extract it from the response
+        fetch(`http://localhost:5000/api/${gameId}/board`)
+          .then(response => response.json())
+          .then(boardData => {
+            const transformedUnits = boardData.map((boardCard: any) => ({
+              cardId: boardCard.cardId,
+              position: boardCard.position,
+              playerId: boardCard.playerId,
+              equippedUnit: boardCard.equippedUnit,
+              baseUnit: {
+                name: boardCard.cardDetails?.name || 'Unknown',
+                type: boardCard.cardDetails?.type || 'Unknown',
+                ability: boardCard.cardDetails?.ability
+              }
+            }));
+            
+            setBoardUnits(transformedUnits);
+          });
+          
+        console.log('Combat result:', data.result.message);
+        // You could display the combat log/results here
+      } else {
+        setErrorMessage(data.result ? data.result.message : 'Attack failed');
+      }
+      
+      // Clear the selected unit after attack
+      setSelectedUnit(null);
+    })
+    .catch(err => {
+      console.error('Error attacking unit:', err);
+      setErrorMessage('Failed to attack: ' + err.message);
+    });
+  };
+  
+  // Handle placing a card on a cell
+  const handlePlaceCard = (row: number, col: number) => {
+    if (!selectedCard || !gameId || !playerId) return;
+    
+    // Check if cell is valid for placement
+    // For now using a simple rule - only in player territory
+    const isValidPlacement = row >= 4; 
+    
+    if (isValidPlacement) {
+      // Create temporary unit for immediate visual feedback
+      const tempUnit: BoardUnit = {
+        cardId: selectedCard.id,
+        position: { row, col },
+        playerId: playerId,
+        equippedUnit: {
+          effectiveDamage: selectedCard.damage || 0,
+          effectiveHealth: selectedCard.health || 0
+        },
+        baseUnit: {
+          name: selectedCard.name,
+          type: selectedCard.type,
+          ability: selectedCard.ability
+        }
+      };
+      
+      // Update local state for immediate feedback
+      setBoardUnits([...boardUnits, tempUnit]);
+      
+      // Call the API to place the card on the backend
+      fetch('http://localhost:5000/api/game/place-card', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'player-id': playerId
+        },
+        body: JSON.stringify({
+          gameId: gameId,
+          cardId: selectedCard.id,
+          position: { row, col }
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to place card on server');
+        }
+        return res.json();
+      })
+      .then(updatedGameState => {
+        // Call the callback to inform the parent component
+        onCardPlaced({
+          cardId: selectedCard.id,
+          position: { row, col },
+          gameId: gameId
+        });
+        
+        setErrorMessage(null);
+      })
+      .catch(err => {
+        console.error('Error placing card:', err);
+        setErrorMessage('Failed to place card: ' + err.message);
+        
+        // Remove the temporary unit if the backend call failed
+        setBoardUnits(boardUnits.filter(unit => 
+          !(unit.position.row === row && unit.position.col === col)
+        ));
+      });
+    } else {
+      setErrorMessage('Invalid placement location');
+    }
+  };
+  
+  // Handle equipping gear to a unit
+  const handleEquipGear = (targetUnit: BoardUnit) => {
+    if (!selectedCard || !gameId || !playerId || selectedCard.type !== 'Gear') return;
+    
+    fetch('http://localhost:5000/api/equip-gear', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'player-id': playerId
+      },
+      body: JSON.stringify({
+        gameId: gameId,
+        gearCardId: selectedCard.id,
+        targetPosition: targetUnit.position
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // Refresh board state
+      fetch(`http://localhost:5000/api/${gameId}/board`)
+        .then(response => response.json())
+        .then(boardData => {
+          const transformedUnits = boardData.map((boardCard: any) => ({
+            cardId: boardCard.cardId,
+            position: boardCard.position,
+            playerId: boardCard.playerId,
+            equippedUnit: boardCard.equippedUnit,
+            baseUnit: {
+              name: boardCard.cardDetails?.name || 'Unknown',
+              type: boardCard.cardDetails?.type || 'Unknown',
+              ability: boardCard.cardDetails?.ability
+            }
+          }));
+          
+          setBoardUnits(transformedUnits);
+        });
+        
+      // Call the callback to inform the parent component
+      onCardPlaced({
+        cardId: selectedCard.id,
+        targetPosition: targetUnit.position,
+        gameId: gameId,
+        isGearEquip: true
+      });
+    })
+    .catch(err => {
+      console.error('Error equipping gear:', err);
+      setErrorMessage('Failed to equip gear: ' + err.message);
+    });
   };
   
   // Find a unit at a specific position
@@ -151,8 +404,10 @@ const GameBoard: React.FC = () => {
             selectedUnit={selectedUnit}
             onUnitSelect={handleUnitSelect}
             onCellClick={handleCellClick}
-            onUnitHover={setHoveredUnit}
+            onUnitHover={handleUnitHover}
             onUnitLeave={() => setHoveredUnit(null)}
+            placementMode={placementMode}
+            onPlaceCard={handlePlaceCard}
           />
         );
       }
@@ -170,70 +425,23 @@ const GameBoard: React.FC = () => {
   // Determine which unit to display in the panel
   const displayUnit = selectedUnit || hoveredUnit;
   
-  // Handler for closing the panel
-  const handleClosePanel = () => {
-    setSelectedUnit(null);
-  };
-
   return (
-    <div className="game-area">
+    <div className={`game-area ${placementMode ? 'placement-mode' : ''}`}>
+      {isLoading && <div className="loading-overlay">Loading board...</div>}
+      
+      {errorMessage && (
+        <div className="error-message board-error">
+          {errorMessage}
+        </div>
+      )}
+      
       <div className="game-board-container">
         <div className="game-board">
           {renderGrid()}
         </div>
       </div>
-      
-      {/* Card detail panel - shows when a unit is selected or hovered */}
-      {displayUnit && (
-        <div className={`card-detail-panel ${selectedUnit ? 'click-panel' : 'hover-panel'}`}>
-          <button 
-            className="close-panel-button" 
-            onClick={handleClosePanel}
-            aria-label="Close panel"
-          >
-            ✕
-          </button>
-          
-          <h3>{displayUnit.baseUnit?.name}</h3>
-          <div className="card-type">{displayUnit.baseUnit?.type}</div>
-          
-          <div className="stat-display">
-            <div className="stat-item">
-              <span className="stat-label">Attack:</span>
-              <span className="stat-value">{displayUnit.equippedUnit?.effectiveDamage}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Health:</span>
-              <span className="stat-value">{displayUnit.equippedUnit?.effectiveHealth}</span>
-            </div>
-          </div>
-          
-          {displayUnit.baseUnit?.ability && (
-            <div className="ability-section">
-              <h4>Ability:</h4>
-              <p>{displayUnit.baseUnit.ability}</p>
-            </div>
-          )}
-          
-          {/* Only show action buttons if this is a clicked unit (not just hover) */}
-          {selectedUnit && (
-            <div className="action-buttons">
-              <button className="action-button">Move</button>
-               {/* New ability button - disabled if unit has no ability */}
-    <button 
-      className="action-button ability-button"
-      disabled={!selectedUnit.baseUnit?.ability}
-      title={selectedUnit.baseUnit?.ability || "This unit has no ability"}
-    >
-      Use Ability
-    </button>
-              <button className="action-button">Attack</button>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
-  
+
 export default GameBoard;

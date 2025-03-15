@@ -1,0 +1,42 @@
+/* Card type labels styling */
+.card-type-label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Card in hand labels */
+.hand-card .card-type-label {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* Type-specific styles */
+.type-unit {
+  background-color: rgba(255, 92, 141, 0.2);
+  color: #ff5c8d;
+  border: 1px solid #ff5c8d;
+}
+
+.type-gear {
+  background-color: rgba(99, 199, 255, 0.2);
+  color: #63c7ff;
+  border: 1px solid #63c7ff;
+}
+
+.type-spell {
+  background-color: rgba(123, 110, 246, 0.2);
+  color: #7b6ef6;
+  border: 1px solid #7b6ef6;
+}
+
+.type-other {
+  background-color: rgba(126, 217, 87, 0.2);
+  color: #7ed957;
+  border: 1px solid #7ed957;
+}

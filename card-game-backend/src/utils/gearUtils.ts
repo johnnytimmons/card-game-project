@@ -1,64 +1,84 @@
 // utils/gearUtils.ts
-import { UnitCard, GearCard } from "../models/cardModel";
+import { Card, GearCard, BoardCard } from "../models/cardModel";
 import { EquippedUnit, createEquippedUnit } from "../models/attachmentModel";
 
 /**
- * Equips a gear card to a unit and recalculates stats
+ * Processes ability text to extract numerical modifiers
+ * Works with both string and string[] ability types
+ * @param ability The ability text to process
+ * @param pattern The regex pattern to match
+ * @returns The extracted numerical value or 0 if no match
  */
-export function equipGear(unit: EquippedUnit, gear: GearCard): EquippedUnit {
-    // Create a new object to avoid mutating the original
-    const updatedUnit: EquippedUnit = { 
-      ...unit,
-      equippedGear: [...unit.equippedGear, gear],
-      abilities: [...unit.abilities]
-    };
-
-     // Apply stat changes from the gear
-  if (gear.damage) {
-    updatedUnit.effectiveDamage += gear.damage;
-
-    if (gear.health) {
-        updatedUnit.effectiveHealth += gear.health;
-      }
+function extractModifierFromAbility(abilities: string | string[] | undefined, pattern: RegExp): number {
+  // If ability is undefined, return 0
+  if (!abilities) return 0;
+  
+  // Convert ability to string if it's an array
+  const abilityText = Array.isArray(abilities) ? abilities.join(' ') : abilities;
+  
+  // Match the pattern
+  const match = abilityText.match(pattern);
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
   }
- 
-  // Handle ability text
-  if (gear.ability) {
-    // Check if ability includes stat modifiers like "+20 Health"
-    const healthModMatch = gear.ability.match(/([+-]\d+)\s+Health/i);
-    const damageModMatch = gear.ability.match(/([+-]\d+)\s+Dam/i);
-    const defModMatch = gear.ability.match(/([+-]\d+)\s+Def/i);
-    
-      // Apply health modifier from ability text
-      if (healthModMatch) {
-        const modifier = parseInt(healthModMatch[1]);
-        updatedUnit.effectiveHealth += modifier;
-      }
-
-      // Apply damage modifier from ability text
-    if (damageModMatch) {
-        const modifier = parseInt(damageModMatch[1]);
-        updatedUnit.effectiveDamage += modifier;
-      }
-
-     // Apply defense modifier from ability text
-     if (defModMatch) {
-        const modifier = parseInt(defModMatch[1]);
-        updatedUnit.defense += modifier;
-      }
-      
-      // Add the ability to the unit's ability list
-      updatedUnit.abilities.push(gear.ability);
-    }
-
-    return updatedUnit;
+  
+  return 0;
 }
 
-/**
+/**-----------------------------------------------------------------------------------------------------
+ * Equips a gear card to a unit, updating its stats and abilities
+ * @param unit The unit to equip the gear to
+ * @param gear The gear card to equip
+ * @returns The updated unit with the gear equipped
+ */
+export function equipGear(unit: EquippedUnit, gear: GearCard): EquippedUnit {
+  // Create a copy of the unit to avoid modifying the original
+  const updatedUnit: EquippedUnit = {
+    ...unit,
+    equippedGear: [...unit.equippedGear, gear],
+    effectiveDamage: unit.effectiveDamage,
+    effectiveHealth: unit.effectiveHealth,
+    defense: unit.defense,
+    abilities: [...unit.abilities]
+  };
+  
+  // Apply any direct stat boosts from the gear card
+  if (gear.damage) {
+    updatedUnit.effectiveDamage += gear.damage;
+  }
+  
+  if (gear.health) {
+    updatedUnit.effectiveHealth += gear.health;
+  }
+  
+  // Extract modifiers from ability text
+  const healthMod = extractModifierFromAbility(gear.abilities, /([+-]\d+)\s+Health/i);
+  const damageMod = extractModifierFromAbility(gear.abilities, /([+-]\d+)\s+Dam/i);
+  const defMod = extractModifierFromAbility(gear.abilities, /([+-]\d+)\s+Def/i);
+  
+  // Apply the extracted modifiers
+  updatedUnit.effectiveDamage += damageMod;
+  updatedUnit.effectiveHealth += healthMod;
+  updatedUnit.defense += defMod;
+  
+  // Add the ability text to the unit's abilities array
+  if (gear.abilities) {
+    if (Array.isArray(gear.abilities)) {
+      // If it's an array, add each ability individually
+      updatedUnit.abilities.push(...gear.abilities);
+    } else {
+      // If it's a string, add the whole ability
+      updatedUnit.abilities.push(gear.abilities);
+    }
+  }
+  
+  return updatedUnit;
+}
+/**----------------------------------------------------------------------------------------
  * Converts a regular unit card to an equipped unit with the given gear
  */
 
-export function createUnitWithGear(unit: UnitCard, gear: GearCard[]): EquippedUnit {
+export function createUnitWithGear(unit: BoardCard, gear: GearCard[]): EquippedUnit {
   // Start with a basic equipped unit
   let equippedUnit = createEquippedUnit(unit);
   
