@@ -1,0 +1,112 @@
+.unit-detail-modal {
+  position: absolute;
+  width: 250px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(83, 127, 231, 0.25);
+  z-index: 1000;
+  padding: 15px;
+  pointer-events: auto;
+  transform: translate(-50%, -40%);
+  border: 1px solid rgba(156, 136, 255, 0.3);
+  font-family: "Nunito", "Quicksand", sans-serif;
+  overflow: hidden;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -90%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
+}
+
+.unit-modal-header {
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(156, 136, 255, 0.2);
+  padding-bottom: 8px;
+}
+
+.unit-modal-header h3 {
+  margin: 0;
+  color: #5e4b92;
+  font-size: 18px;
+}
+
+.unit-type {
+  display: inline-block;
+  background: rgba(156, 136, 255, 0.1);
+  color: #7b6ef6;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.unit-modal-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 12px 0;
+  padding: 8px;
+  background: rgba(248, 249, 255, 0.7);
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-icon {
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.unit-modal-abilities h4,
+.unit-modal-equipment h4 {
+  font-size: 14px;
+  color: #5e4b92;
+  margin: 10px 0 5px 0;
+}
+
+.ability-list,
+.equipment-list {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.ability-item {
+  background: rgba(123, 110, 246, 0.1);
+  padding: 5px 10px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  border-left: 2px solid #7b6ef6;
+}
+
+.equipment-item {
+  background: rgba(99, 199, 255, 0.1);
+  padding: 5px 10px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  border-left: 2px solid #63c7ff;
+}
+
+.gear-icon {
+  margin-right: 5px;
+}

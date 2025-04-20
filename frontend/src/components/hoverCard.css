@@ -1,39 +1,113 @@
-/* Debug version of hoverCard.css - simplified for testing */
-@import url(https://fonts.googleapis.com/css?family=Lato);
-
-/* Add a noticeable border to confirm CSS is applied */
+/* Add or update these styles in your hoverCard.css */
 .card {
-  border: 3px solid red;
-  width: 145px;
-  height: 140px;
-  transition: transform 0.5s ease;
   position: relative;
-  margin: 5px;
-  margin-bottom: auto;
-  background: white;
-
-  /* Initial state - start with basic transform */
-  transform: translateY(15%);
+  width: 160px;
+  height: 220px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  caret-color: transparent;
+  cursor: pointer;
 }
 
-/* Clear hover effect with dramatic change */
-.card:hover {
-  border-color: green;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  transform: scale(1.03) translateX(0px);
-  cursor: grab;
-}
-
-/* Basic header styles */
-.card-header {
-  background-color: blue;
-  color: white;
-  padding: 10px;
+.card-type {
+  position: absolute;
+  top: 1.2rem;
+  width: 100%;
   text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  color: rgb(255, 255, 255);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  z-index: 3;
 }
 
-.card-body {
-  padding: 20px;
-  width: 125px;
-  height: 140px;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card-artwork {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.card-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.card-name {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 5px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  z-index: 3;
+}
+
+.card-stats {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  z-index: 3;
+}
+
+.stat {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+}
+
+.card-container {
+  position: relative;
+  width: 160px;
+  height: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.card-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-artwork img {
+  width: 75%;
+  height: 75%;
+  object-fit: cover;
+  margin-top: 2.25rem;
 }

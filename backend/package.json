@@ -4,10 +4,12 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "if not exist \"src\\shared\\types\" mkdir \"src\\shared\\types\" && copy \"..\\..\\shared\\types\\map.types.ts\" \"src\\shared\\types\\map.types.ts\"",
     "build": "tsc",
-    "start": "dist/server.js",
-    "dev": "ts-node src/server.ts"
+    "start": "ts-node --project tsconfig.node.json src/server.ts",
+    "dev": "ts-node --project tsconfig.node.json src/server.ts",
+    "dev:watch": "nodemon --exec \"ts-node --project tsconfig.node.json\" src/server.ts",
+    "turbo:build": "turbo run build"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +19,17 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.8",
     "@types/uuid": "^10.0.0",
+    "body-parser": "^1.x",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^x.x.x",
+    "nodemon": "^x.x.x",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^x.x.x"
   }
 }

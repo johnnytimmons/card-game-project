@@ -1,0 +1,114 @@
+.dice-roller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.dice-button {
+  width: 130px;
+  height: 130px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6b85da, #51639c);
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Special Elite", "Courier New", monospace;
+}
+
+.dice-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dice-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dice-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dice-button.rolling {
+  animation:
+    shake 0.5s infinite,
+    pulse 1s infinite alternate;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+  }
+}
+
+.roll-result {
+  margin-top: 15px;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 18px;
+  color: #ffcc00;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.dice-button.phase-turn_start {
+  background: linear-gradient(135deg, #4a90e2, #2980b9);
+}
+
+.dice-button.phase-move {
+  background: linear-gradient(135deg, #6b85da, #51639c);
+}
+
+.dice-button.phase-after_move {
+  background: linear-gradient(135deg, #7ed957, #27ae60);
+}
+
+/* Phase indicator */
+.phase-indicator {
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  font-family: "Special Elite", "Courier New", monospace;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+/* Turn indicator */
+.turn-indicator {
+  margin-top: 10px;
+  font-family: "Special Elite", "Courier New", monospace;
+  color: #ffcc00;
+  text-align: center;
+  font-size: 14px;
+}

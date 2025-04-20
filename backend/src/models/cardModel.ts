@@ -1,16 +1,15 @@
-
-export type CardOrigin = 'Dream' | 'Memory' | 'Promise';
-export type CardPower = 'Kin' | 'Kindred' | 'Shadow';
+export type CardOrigin = "Dream" | "Memory" | "Promise";
+export type CardPower = "Kin" | "Kindred" | "Shadow";
 // Basic card interface that all cards share-------------------------------------------------
 
 // Base Card type for all cards
 export interface Card {
-  id: number;
-  unit: [];
+  cardId: number;
+  unit?: [];
   name: string;
   type: string;
-  origin: CardOrigin;
-  power: CardPower;
+  origin?: CardOrigin;
+  power?: CardPower;
   description?: string;
   abilities?: string | string[];
   damage?: number;
@@ -18,12 +17,14 @@ export interface Card {
   defense?: number;
   evolution?: EvolutionInfo;
   evolvedFrom?: number;
-  usageTypes: ('Unit' | 'Spell' | 'Gear' | 'Card')[];
+  usageTypes?: ("Unit" | "Spell" | "Gear" | "Card")[];
+  dpCost?: number;
 }
 
 export interface BoardCard extends Card {
   type: string;
-  position: { row: number, col: number };
+  cardId: number;
+  position: { row: number; col: number };
   playerId: string;
   currentHealth: number;
   isExhausted: boolean;
@@ -40,8 +41,7 @@ export interface BoardCard extends Card {
 export interface SpellCard extends Card {
   type: string;
   effect: string;
-  damage: number;
-  targetType: 'Single' | 'Area' | 'All';
+  targetType: "Single" | "Area" | "All" | "Dual" | "None";
 }
 
 // Gear can be equipped to units-------------------------------------------------------------------
@@ -55,16 +55,9 @@ export interface GearCard extends Card {
 export interface EvolutionInfo {
   canEvolve: boolean;
   evolvesToId?: number;
+  evolvedName?: string;
   evolutionConditions?: string[];
 }
 
 // Union type for all card types
 export type Cards = Card | BoardCard | SpellCard | GearCard;
-
-
-
-
-
-
-
-

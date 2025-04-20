@@ -1,0 +1,57 @@
+.player-token {
+  width: 40px;
+  height: 40px;
+  border: 3px solid white;
+  border-radius: 50%;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    transform 0.5s ease,
+    left 0.5s ease,
+    top 0.5s ease;
+  will-change: transform, left, top;
+}
+
+.player-token:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+.player-token.is-moving {
+  transition:
+    transform 0.3s ease,
+    left 0.3s ease,
+    top 0.3s ease;
+}
+
+.player-initials {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.player-dp {
+  position: absolute;
+  top: -20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}

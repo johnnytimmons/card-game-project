@@ -1,105 +1,88 @@
 // data/card-registry.ts
-import { 
-  Card, 
-  BoardCard, 
-  SpellCard, 
-  GearCard,
-  CardOrigin,
-  CardPower
-} from "../models/cardModel";
-import dreamWispEntityGroup from "./kindred/dream-entities";
 
-// Create an array of all entity groups for easier iteration
-const entityGroups = [
-    dreamWispEntityGroup,
-    //memoryEntityGroup,
-    //promiseEntityGroup
-    // Add new groups here as you create them
-  ];
+import { Card, GearCard } from "../models/cardModel";
 
-
-  // Collect all cards by type using the entity groups array
-  export const handCards = entityGroups.flatMap(group => group.getHandCards());
-  export const spellCards = entityGroups.flatMap(group => group.getSpells());
-  export const gearCards = entityGroups.flatMap(group => group.getGear());
-  export const boardCards = entityGroups.flatMap(group => group.getBoardCards());
- 
-// Combined collection remains the same
-export const allCards: Card[] = [
-    ...handCards,
-    ...spellCards,
-    ...gearCards
-  ];
-
-  // Helper Function to get all cards with a specific ability---------------------------------------
-export function getCardsByAbility(abilityName: string): Card[] {
-    return allCards.filter(card => {
-      if (typeof card.abilities === 'string') {
-        return card.abilities === abilityName;
-      } else if (Array.isArray(card.abilities)) {
-        return card.abilities.includes(abilityName);
-      }
-      return false;
-    });
-  }
-
-  // Helper function to get counts of each card type------------------------------------------------
-  export function getCardCounts() {
-    return {
-        units: handCards.length,
-        spells: spellCards.length,
-        gear: gearCards.length,
-        boards: boardCards.length,
-        total: allCards.length
-    };
+// Define a Deck interface
+export interface Deck {
+  id: string;
+  name: string;
+  description: string;
+  cards: number[]; // Array of card IDs
 }
 
-  // Helper function to find a card by ID ------------------------------------------------------------
-export function findCardById(cardId: number) {
-    return allCards.find(card => card.id === cardId);
-  }
+// Sample card data - replace this with your actual card database
+const cardDatabase: Card[] = [
+  {
+    cardId: 1,
+    name: "Wehrmacht Infantry",
+    type: "Unit",
+    damage: 3,
+    health: 3,
+    description: "Standard German infantry unit",
+    abilities: ["Quick Deploy"],
+  },
+  {
+    cardId: 2,
+    name: "Allied Soldier",
+    type: "Unit",
+    damage: 2,
+    health: 4,
+    description: "Resilient allied forces",
+    abilities: ["Endurance"],
+  },
+  {
+    cardId: 3,
+    name: "Occult Officer",
+    type: "Unit",
+    damage: 4,
+    health: 2,
+    description: "Nazi occult research division",
+    abilities: ["Dark Ritual"],
+  },
+  // Add more cards as needed
+];
 
-  // Helper function to get counts by origin------------------------------------------------------------
-export function getCardCountsByOrigin() {
-    const counts: Record<string, number> = {};
-    
-    allCards.forEach(card => {
-      if (card.origin) {
-        counts[card.origin] = (counts[card.origin] || 0) + 1;
-      }
-    });
-    return counts;
-  }
+// Sample deck data
+const deckDatabase: Deck[] = [
+  {
+    id: "standard",
+    name: "Standard Deck",
+    description: "A balanced mix of military and occult units",
+    cards: [1, 2, 3], // IDs of cards in this deck
+  },
+  {
+    id: "military",
+    name: "Military Might",
+    description: "Focused on strong military units and tactics",
+    cards: [1, 2], // IDs of military-themed cards
+  },
+  {
+    id: "occult",
+    name: "Occult Powers",
+    description: "Harness dark occult forces from the war",
+    cards: [3], // IDs of occult-themed cards
+  },
+];
 
-  // Helper function to get all evolution relationships ------------------------------------------------------------
-export function getEvolutionPairs(): {base: Card, evolved: Card}[] {
-    const pairs = [];
-    for (const card of handCards) {
-      if (card.evolution?.canEvolve && card.evolution.evolvesToId) {
-        const evolved = handCards.find(c => c.id === card.evolution?.evolvesToId);
-        if (evolved) {
-          pairs.push({ base: card, evolved });
-        }
-      }
-    }
-    return pairs;
-  }
+// Function to find a card by ID
+export function findCardById(cardId: number): Card | undefined {
+  return cardDatabase.find((card) => card.cardId === cardId);
+}
 
-  // Helper function to get all cards of a specific entity-----------------------------------------------------
-export function getEntityCards(name: string, origin: string) {
-    const handCard = handCards.find(card => card.name === name && card.origin === origin);
-    const spell = spellCards.find(card => card.name === name && card.origin === origin);
-    const gear = gearCards.find(card => card.name === name && card.origin === origin);
-    const boardCard = boardCards.find(card => card.name === name && card.origin === origin);
-    
-    return { handCard, spell, gear, boardCard };
-  }
+// Function to find a deck by ID
+export function getDeckById(deckId: string): Deck | undefined {
+  return deckDatabase.find((deck) => deck.id === deckId);
+}
 
-  // Helper function to get the evolved form of a card
-export function getEvolvedForm(cardId: number) {
-    const card = handCards.find(c => c.id === cardId);
-    if (card?.evolution?.canEvolve && card.evolution.evolvesToId) {
-      return handCards.find(c => c.id === card.evolution?.evolvesToId);
-    }
-    return undefined;
-  }
+// Function to get all available decks
+export function getAvailableDecks(): Deck[] {
+  return deckDatabase;
+}
+
+// Get all cards
+export const allCards = cardDatabase;
+
+// Get a filtered subset of cards by type
+export function getCardsByType(type: string): Card[] {
+  return cardDatabase.filter((card) => card.type === type);
+}

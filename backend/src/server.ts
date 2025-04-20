@@ -1,15 +1,33 @@
+import path from "path";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import moduleAlias from "module-alias";
 
-import app from "./app";
-import gameRoutes from "./routes/game-routes";
-const PORT = 5000;
-// Add before app.listen
-console.log("Registered routes:");
-gameRoutes.stack.forEach((layer: any) => {
-  if (layer.route) {
-    console.log(`${layer.route.path} - ${Object.keys(layer.route.methods)}`);
-  }
+// Set up module aliases for runtime
+moduleAlias.addAliases({
+  "@shared": path.resolve(__dirname, "../../shared"),
+  // Add other aliases if needed
 });
 
+// Now import your routes that use these aliases
+import mapRoutes from "./routes/mapRoutes";
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+  })
+);
+app.use(bodyParser.json());
+
+// Routes
+app.use("/api/maps", mapRoutes);
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

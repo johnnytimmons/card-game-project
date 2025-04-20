@@ -13,6 +13,7 @@ app.use("/api/card", cardRoutes);
 app.use("/api/game", gameRoutes); // Added game routes with /api/game prefix
 
 // A default route to check if the server is running
+
 app.get("/", (req, res) => {
   res.send("Backend is running...");
 });

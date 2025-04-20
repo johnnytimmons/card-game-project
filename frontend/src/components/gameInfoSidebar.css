@@ -1,0 +1,58 @@
+/* Add this to your CSS file */
+.player-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.phase-button {
+  background: linear-gradient(135deg, #6b85da, #7b6ef6);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(123, 110, 246, 0.3);
+  font-family: "Nunito", "Quicksand", sans-serif;
+  font-size: 14px;
+}
+
+.phase-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(123, 110, 246, 0.4);
+}
+
+.end-turn-button {
+  background: linear-gradient(135deg, #ff7eb6, #ff90a1);
+  color: white;
+  /* Keep the rest of your end-turn-button styles */
+}
+
+.phase-transition-message {
+  background-color: rgba(123, 110, 246, 0.1);
+  border-left: 3px solid #7b6ef6;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transition-animation {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #7b6ef6;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
